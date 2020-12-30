@@ -516,21 +516,23 @@ class _HomeState extends State<Home> {
               left: 0,
               child: Container(
                 width: size.width,
-                height: 65,
+                // height: 65,
+                height: 80,
 
                 // Stack so the paint will be behind the icon
                 child: Stack(
                   children: <Widget>[
                     CustomPaint(
-                      size: Size(size.width, 65),
+                      // size: Size(size.width, 65),
+                      size: Size(size.width, 80),
                       painter: ButtomNavigationPainter(),
                     ),
                     Center(
                       //Raise the center button
                       heightFactor: 0.5,
                       child: Container(
-                        height: 1000,
-                        width: 1000,
+                        height: 100,
+                        width: 100,
                         child: FloatingActionButton(
                           onPressed: () {
                             testKotipButton();
@@ -813,6 +815,19 @@ class ButtomNavigationPainter extends CustomPainter {
     path.close();
     canvas.drawShadow(path, Colors.black, 5, true);
     canvas.drawPath(path, paint);
+
+    // Path path = Path()..moveTo(0, 20);
+    // path.quadraticBezierTo(size.width * 0.20, 0, size.width * 0.35, 0);
+    // path.quadraticBezierTo(size.width * 0.40, 0, size.width * 0.40, 20);
+    // path.arcToPoint(Offset(size.width * 0.60, 20),
+    //     radius: Radius.circular(10.0), clockwise: false);
+    // path.quadraticBezierTo(size.width * 0.60, 0, size.width * 0.65, 0);
+    // path.quadraticBezierTo(size.width * 0.80, 0, size.width, 20);
+    // path.lineTo(size.width, size.height);
+    // path.lineTo(0, size.height);
+    // path.close();
+    // canvas.drawShadow(path, Colors.black, 5, true);
+    // canvas.drawPath(path, paint);
   }
 
   @override
