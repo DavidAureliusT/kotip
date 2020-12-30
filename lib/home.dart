@@ -421,37 +421,82 @@ class _HomeState extends State<Home> {
                               ),
                             ),
                             //Perlu Wrap
-                            Wrap(),
-                            Card(
-                              child: ListTile(
-                                  title: Text('Konser 1'),
-                                  subtitle:
-                                      Text('KONSERRRRRRRRRRRRRRRRRRRRRRRRR')),
+                            Wrap(
+                              children: <Widget>[
+                                PencarianTerkiniCard(
+                                  PencarianTerkiniImage:
+                                      "assets/images/Unixverse.jpg",
+                                  PencarianTerkiniGrup: "SF9",
+                                  PencarianTerkiniConcert: "UNIXVERSE",
+                                  PencarianTerkiniDate: "10/10/2020",
+                                ),
+                                PencarianTerkiniCard(
+                                  PencarianTerkiniImage:
+                                      "assets/images/Unixverse.jpg",
+                                  PencarianTerkiniGrup: "SF9",
+                                  PencarianTerkiniConcert: "UNIXVERSE",
+                                  PencarianTerkiniDate: "10/10/2020",
+                                ),
+                                PencarianTerkiniCard(
+                                  PencarianTerkiniImage:
+                                      "assets/images/Unixverse.jpg",
+                                  PencarianTerkiniGrup: "SF9",
+                                  PencarianTerkiniConcert: "UNIXVERSE",
+                                  PencarianTerkiniDate: "10/10/2020",
+                                ),
+                                PencarianTerkiniCard(
+                                  PencarianTerkiniImage:
+                                      "assets/images/Unixverse.jpg",
+                                  PencarianTerkiniGrup: "SF9",
+                                  PencarianTerkiniConcert: "UNIXVERSE",
+                                  PencarianTerkiniDate: "10/10/2020",
+                                ),
+                                PencarianTerkiniCard(
+                                  PencarianTerkiniImage:
+                                      "assets/images/Unixverse.jpg",
+                                  PencarianTerkiniGrup: "SF9",
+                                  PencarianTerkiniConcert: "UNIXVERSE",
+                                  PencarianTerkiniDate: "10/10/2020",
+                                ),
+                                PencarianTerkiniCard(
+                                  PencarianTerkiniImage:
+                                      "assets/images/Unixverse.jpg",
+                                  PencarianTerkiniGrup: "SF9",
+                                  PencarianTerkiniConcert: "UNIXVERSE",
+                                  PencarianTerkiniDate: "10/10/2020",
+                                ),
+                              ],
                             ),
-                            Card(
-                              child: ListTile(
-                                  title: Text('Konser 2'),
-                                  subtitle:
-                                      Text('KONSERRRRRRRRRRRRRRRRRRRRRRRRR')),
-                            ),
-                            Card(
-                              child: ListTile(
-                                  title: Text('Konser 3'),
-                                  subtitle:
-                                      Text('KONSERRRRRRRRRRRRRRRRRRRRRRRRR')),
-                            ),
-                            Card(
-                              child: ListTile(
-                                  title: Text('Konser 4'),
-                                  subtitle:
-                                      Text('KONSERRRRRRRRRRRRRRRRRRRRRRRRR')),
-                            ),
-                            Card(
-                              child: ListTile(
-                                  title: Text('Konser 5'),
-                                  subtitle:
-                                      Text('KONSERRRRRRRRRRRRRRRRRRRRRRRRR')),
-                            ),
+                            // Card(
+                            //   child: ListTile(
+                            //       title: Text('Konser 1'),
+                            //       subtitle:
+                            //           Text('KONSERRRRRRRRRRRRRRRRRRRRRRRRR')),
+                            // ),
+                            // Card(
+                            //   child: ListTile(
+                            //       title: Text('Konser 2'),
+                            //       subtitle:
+                            //           Text('KONSERRRRRRRRRRRRRRRRRRRRRRRRR')),
+                            // ),
+                            // Card(
+                            //   child: ListTile(
+                            //       title: Text('Konser 3'),
+                            //       subtitle:
+                            //           Text('KONSERRRRRRRRRRRRRRRRRRRRRRRRR')),
+                            // ),
+                            // Card(
+                            //   child: ListTile(
+                            //       title: Text('Konser 4'),
+                            //       subtitle:
+                            //           Text('KONSERRRRRRRRRRRRRRRRRRRRRRRRR')),
+                            // ),
+                            // Card(
+                            //   child: ListTile(
+                            //       title: Text('Konser 5'),
+                            //       subtitle:
+                            //           Text('KONSERRRRRRRRRRRRRRRRRRRRRRRRR')),
+                            // ),
                             //Kasih jarak bottom nav dengan yang di atas
                             SizedBox(
                               height: MediaQuery.of(context).size.height * 0.15,
@@ -540,6 +585,88 @@ class _HomeState extends State<Home> {
   }
 }
 
+class PencarianTerkiniCard extends StatelessWidget {
+  PencarianTerkiniCard(
+      {@required this.PencarianTerkiniImage,
+      @required this.PencarianTerkiniGrup,
+      @required this.PencarianTerkiniConcert,
+      @required this.PencarianTerkiniDate});
+
+  final String PencarianTerkiniImage;
+  final String PencarianTerkiniGrup;
+  final String PencarianTerkiniConcert;
+  final String PencarianTerkiniDate;
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      width: 200,
+      child: Card(
+        semanticContainer: true,
+        clipBehavior: Clip.antiAliasWithSaveLayer,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(33),
+        ),
+        child: CustomPaint(
+          painter: PencarianTerkiniPainter(),
+          child: Wrap(
+            children: <Widget>[
+              Image(
+                image: AssetImage(PencarianTerkiniImage),
+              ),
+              Center(
+                child: Column(
+                  children: <Widget>[
+                    Text(
+                      PencarianTerkiniGrup,
+                      style: TextStyle(
+                          fontFamily: "BwModelicaSS01 ExtraBold",
+                          fontSize: 15,
+                          color: Colors.white),
+                    ),
+                    Text(
+                      PencarianTerkiniConcert,
+                      style: TextStyle(
+                          fontFamily: "BwModelicaSS01 Regular",
+                          fontSize: 15,
+                          color: Colors.white),
+                    ),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: <Widget>[
+                        Icon(
+                          FrinoIcons.f_calendar,
+                          size: 13,
+                          color: Colors.white,
+                        ),
+                        SizedBox(
+                          width: 3,
+                        ),
+                        Text(
+                          PencarianTerkiniDate,
+                          style: TextStyle(
+                              fontFamily: "BwModelicaSS01 Regular",
+                              fontSize: 13,
+                              color: Colors.white),
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
+              ),
+              // ListTile(
+              //   title: Text("Tesst"),
+              //   subtitle: Text("Test2"),
+              //
+              // ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}
+
 // Custom Banner
 class BannerText extends StatelessWidget {
   BannerText({
@@ -619,6 +746,39 @@ class grupKpopPainter extends CustomPainter {
     //Start paint from 80% of width
     trianglePath.moveTo(width * 0.65, 0);
     trianglePath.lineTo(0, width * 0.60);
+    trianglePath.lineTo(0, height);
+    trianglePath.lineTo(width, height);
+    trianglePath.lineTo(size.width, 0);
+    trianglePath.close();
+    paint.color = Color(0xFF2C557E);
+    canvas.drawPath(trianglePath, paint);
+  }
+
+  @override
+  bool shouldRepaint(CustomPainter oldDelegate) {
+    // Not rebuild the paint, only rebuild if change the color
+    return oldDelegate != this;
+  }
+}
+
+class PencarianTerkiniPainter extends CustomPainter {
+  @override
+  void paint(Canvas canvas, Size size) {
+    final height = size.height;
+    final width = size.width;
+    //Used for color where the paint will go
+    Paint paint = Paint();
+    //Used for the path
+    Path mainBackground = Path();
+    mainBackground.addRect(Rect.fromLTRB(0, 0, width, height));
+    paint.color = Color(0xFF59ABFC);
+    //draw in main background
+    canvas.drawPath(mainBackground, paint);
+
+    Path trianglePath = Path();
+    //Start paint from 80% of width
+    trianglePath.moveTo(width * 0.90, 0);
+    trianglePath.lineTo(0, width * 0.90);
     trianglePath.lineTo(0, height);
     trianglePath.lineTo(width, height);
     trianglePath.lineTo(size.width, 0);
