@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:frino_icons/frino_icons.dart';
 
@@ -12,6 +14,36 @@ class _HomeState extends State<Home> {
     void testKotipButton() {
       print('AAA');
     }
+
+    // int _currentIndex = 0;
+    // List<Image> listBannerImage = [
+    //   Image.asset("assets/images/SF9.png"),
+    //   Image.asset("assets/images/BTS.png"),
+    //   Image.asset("assets/images/Blackpink.png"),
+    // ];
+    // Timer _timer;
+    //
+    // @override
+    // void initState() {
+    //   super.initState();
+    //   _timer = Timer.periodic(Duration(seconds: 2), (timer) async {
+    //     if (mounted) {
+    //       setState(() {
+    //         if (_currentIndex + 1 == listBannerImage.length) {
+    //           _currentIndex = 0;
+    //         } else {
+    //           _currentIndex = _currentIndex + 1;
+    //         }
+    //       });
+    //     }
+    //   });
+    // }
+    //
+    // @override
+    // void dispose() {
+    //   _timer.cancel();
+    //   super.dispose();
+    // }
 
     final int konserListSize = 10;
     final Size size = MediaQuery.of(context).size;
@@ -80,6 +112,17 @@ class _HomeState extends State<Home> {
                           ),
                         ),
                       ),
+                      // AnimatedSwitcher(
+                      //   duration: Duration(milliseconds: 500),
+                      //   transitionBuilder:
+                      //       (Widget child, Animation<double> animation) {
+                      //     return FadeTransition(
+                      //         child: child, opacity: animation);
+                      //   },
+                      //   child: Image(
+                      //       image: listBannerImage[_currentIndex].image,
+                      //       key: ValueKey<int>(_currentIndex)),
+                      // ),
                       Image(
                         image: AssetImage("assets/images/SF9.png"),
                         height: 200,
@@ -516,15 +559,15 @@ class _HomeState extends State<Home> {
               left: 0,
               child: Container(
                 width: size.width,
-                // height: 65,
-                height: 80,
+                height: 65,
+                // height: 80,
 
                 // Stack so the paint will be behind the icon
                 child: Stack(
                   children: <Widget>[
                     CustomPaint(
-                      // size: Size(size.width, 65),
-                      size: Size(size.width, 80),
+                      size: Size(size.width, 65),
+                      // size: Size(size.width, 80),
                       painter: ButtomNavigationPainter(),
                     ),
                     Center(
@@ -712,8 +755,8 @@ class BackgroundPainter extends CustomPainter {
 
     Path trianglePath = Path();
     //Start paint from 80% of width
-    trianglePath.moveTo(width * 0.9, 0);
-    trianglePath.lineTo(0, width * 0.60);
+    trianglePath.moveTo(width * 0.85, 0);
+    trianglePath.lineTo(0, width * 0.55);
     trianglePath.lineTo(0, height);
     trianglePath.lineTo(width, height);
     trianglePath.lineTo(size.width, 0);
