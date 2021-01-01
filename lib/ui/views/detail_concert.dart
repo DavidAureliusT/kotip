@@ -40,11 +40,26 @@ class _DetailConcertState extends State<DetailConcert> {
     const Color _secondary = Colors.black54;
     return Scaffold(
       body: CustomScrollView(
-        slivers: [
+        slivers: <Widget>[
           SliverAppBar(
-            backgroundColor: Colors.transparent,
+            floating: true,
+            pinned: true,
+            stretch: true,
+            backgroundColor: Colors.blue,
             expandedHeight: 200,
             flexibleSpace: FlexibleSpaceBar(
+              title: Text(
+                'One Heart Jakarta Festival 2020',
+                style: TextStyle(
+                  fontSize: 20,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.white,
+                ),
+              ),
+              stretchModes: [
+                StretchMode.zoomBackground,
+                StretchMode.blurBackground
+              ],
               background: Stack(
                 fit: StackFit.expand,
                 children: [
@@ -69,19 +84,10 @@ class _DetailConcertState extends State<DetailConcert> {
             ),
           ),
           SliverPadding(
-            padding: EdgeInsets.all(25),
+            padding: EdgeInsets.all(15.0),
             sliver: SliverList(
-              delegate: SliverChildListDelegate([
+              delegate: SliverChildListDelegate(<Widget>[
                 //Concert Title
-                Text(
-                  'One Heart Jakarta Festival 2020',
-                  style: TextStyle(
-                    fontSize: 30,
-                    fontWeight: FontWeight.bold,
-                    color: _primary,
-                  ),
-                  maxLines: 2,
-                ),
                 SizedBox(
                   height: 15.0,
                 ),
@@ -171,7 +177,7 @@ class _DetailConcertState extends State<DetailConcert> {
                                 children: [
                                   Icon(
                                     Icons.circle,
-                                    color: Colors.red,
+                                    color: Colors.green,
                                     size: 10,
                                   ),
                                   Text('Aktif')
@@ -298,27 +304,6 @@ class _DetailConcertState extends State<DetailConcert> {
                                 )
                               : Row(
                                   children: [
-                                    // FlatButton(
-                                    //   color: Colors.blue,
-                                    //   visualDensity:
-                                    //       VisualDensity(horizontal: -3),
-                                    //   shape: RoundedRectangleBorder(
-                                    //     borderRadius: BorderRadius.circular(20),
-                                    //     side: BorderSide(
-                                    //       color: _primary,
-                                    //     ),
-                                    //   ),
-                                    //   child: Text(
-                                    //     '-',
-                                    //     style: TextStyle(
-                                    //       color: Colors.white,
-                                    //       fontSize: 12,
-                                    //     ),
-                                    //   ),
-                                    //   onPressed: () {
-                                    //     _decreaseCounter('1');
-                                    //   },
-                                    // ),
                                     IconButton(
                                       icon: Icon(Icons.remove),
                                       color: Colors.blue,
@@ -379,23 +364,45 @@ class _DetailConcertState extends State<DetailConcert> {
                               ),
                             ),
                           ),
-                          FlatButton(
-                            color: Colors.blue,
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(20),
-                              side: BorderSide(
-                                color: _primary,
-                              ),
-                            ),
-                            child: Text(
-                              'Select',
-                              style: TextStyle(
-                                color: Colors.white,
-                                fontSize: 12,
-                              ),
-                            ),
-                            onPressed: () {},
-                          ),
+                          ticketBCount == 0
+                              ? FlatButton(
+                                  color: Colors.blue,
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(20),
+                                    side: BorderSide(
+                                      color: _primary,
+                                    ),
+                                  ),
+                                  child: Text(
+                                    'Select',
+                                    style: TextStyle(
+                                      color: Colors.white,
+                                      fontSize: 12,
+                                    ),
+                                  ),
+                                  onPressed: () {
+                                    _incrementCounter('2');
+                                  },
+                                )
+                              : Row(
+                                  children: [
+                                    IconButton(
+                                      icon: Icon(Icons.remove),
+                                      color: Colors.blue,
+                                      onPressed: () {
+                                        _decreaseCounter('2');
+                                      },
+                                    ),
+                                    Text(ticketBCount.toString()),
+                                    IconButton(
+                                      icon: Icon(Icons.add),
+                                      color: Colors.blue,
+                                      onPressed: () {
+                                        _incrementCounter('2');
+                                      },
+                                    ),
+                                  ],
+                                ),
                         ]),
                       ],
                     ),
@@ -439,23 +446,45 @@ class _DetailConcertState extends State<DetailConcert> {
                               ),
                             ),
                           ),
-                          FlatButton(
-                            color: Colors.blue,
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(20),
-                              side: BorderSide(
-                                color: _primary,
-                              ),
-                            ),
-                            child: Text(
-                              'Select',
-                              style: TextStyle(
-                                color: Colors.white,
-                                fontSize: 12,
-                              ),
-                            ),
-                            onPressed: () {},
-                          ),
+                          ticketCCount == 0
+                              ? FlatButton(
+                                  color: Colors.blue,
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(20),
+                                    side: BorderSide(
+                                      color: _primary,
+                                    ),
+                                  ),
+                                  child: Text(
+                                    'Select',
+                                    style: TextStyle(
+                                      color: Colors.white,
+                                      fontSize: 12,
+                                    ),
+                                  ),
+                                  onPressed: () {
+                                    _incrementCounter('3');
+                                  },
+                                )
+                              : Row(
+                                  children: [
+                                    IconButton(
+                                      icon: Icon(Icons.remove),
+                                      color: Colors.blue,
+                                      onPressed: () {
+                                        _decreaseCounter('3');
+                                      },
+                                    ),
+                                    Text(ticketCCount.toString()),
+                                    IconButton(
+                                      icon: Icon(Icons.add),
+                                      color: Colors.blue,
+                                      onPressed: () {
+                                        _incrementCounter('3');
+                                      },
+                                    ),
+                                  ],
+                                ),
                         ]),
                       ],
                     ),
@@ -478,7 +507,10 @@ class _DetailConcertState extends State<DetailConcert> {
                       color: Colors.white,
                     ),
                   ),
-                  onPressed: () {},
+                  onPressed: () {
+                    Navigator.of(context).push(
+                        MaterialPageRoute(builder: (context) => OrderList()));
+                  },
                 ),
               ]),
             ),
