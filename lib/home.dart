@@ -236,7 +236,6 @@ class _HomeState extends State<Home> {
                             ),
                             SizedBox(
                               height: 130,
-                              width: 500,
                               child: StreamBuilder(
                                 stream: FirebaseFirestore.instance
                                     .collection("concert")
@@ -255,28 +254,31 @@ class _HomeState extends State<Home> {
                                           snapshot.data.documents.length) {
                                         DocumentSnapshot concert =
                                             snapshot.data.documents[index];
-                                        return Card(
-                                          //supaya cardnya bisa rounded edge
-                                          semanticContainer: true,
-                                          clipBehavior:
-                                              Clip.antiAliasWithSaveLayer,
-                                          shape: RoundedRectangleBorder(
-                                            borderRadius:
-                                                BorderRadius.circular(24),
-                                          ),
-                                          child: Center(
+                                        return SizedBox(
+                                          child: Card(
+                                            //supaya cardnya bisa rounded edge
+                                            semanticContainer: true,
+                                            clipBehavior:
+                                                Clip.antiAliasWithSaveLayer,
+                                            shape: RoundedRectangleBorder(
+                                              borderRadius:
+                                                  BorderRadius.circular(24),
+                                            ),
                                             child: GestureDetector(
                                               onTap: () =>
                                                   navigateToDetail(concert),
-                                              child: Image(
-                                                image: NetworkImage(
-                                                    concert['img']),
+                                              child: Container(
+                                                height: double.infinity,
+                                                alignment: Alignment.center,
+                                                child: Image(
+                                                  image: NetworkImage(
+                                                      concert['img']),
+                                                  fit: BoxFit.cover,
+                                                  width: 200,
+                                                  height: 200,
+                                                ),
                                               ),
                                             ),
-                                            // child: Image(
-                                            //   image: AssetImage(
-                                            //       "assets/images/Unixverse.jpg"),
-                                            // ),
                                           ),
                                         );
                                       }
