@@ -1,24 +1,27 @@
 part of 'views.dart';
 
 class DetailConcert extends StatefulWidget {
+  final String concertId;
+  DetailConcert({this.concertId});
   @override
-  _DetailConcertState createState() => new _DetailConcertState();
+  _DetailConcertState createState() => new _DetailConcertState(concertId);
 }
 
 class _DetailConcertState extends State<DetailConcert> {
-  String idConcert = "lSXWI5Cj53gTdvTXcq6B";
+  String concertId;
+  _DetailConcertState(this.concertId);
 
-  CollectionReference concertCollection =
-      FirebaseFirestore.instance.collection("Concerts");
-  CollectionReference ticketCollection = FirebaseFirestore.instance
-      .collection("Concerts")
-      .doc("lSXWI5Cj53gTdvTXcq6B")
-      .collection('Tickets');
   @override
   Widget build(BuildContext context) {
+    CollectionReference concertCollection =
+        FirebaseFirestore.instance.collection("Concerts");
+    CollectionReference ticketCollection = FirebaseFirestore.instance
+        .collection("Concerts")
+        .doc(concertId)
+        .collection('Tickets');
     return Scaffold(
       body: FutureBuilder<DocumentSnapshot>(
-        future: concertCollection.doc(idConcert).get(),
+        future: concertCollection.doc(concertId).get(),
         builder:
             (BuildContext context, AsyncSnapshot<DocumentSnapshot> snapshot) {
           if (snapshot.hasError) {

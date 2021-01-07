@@ -1,4 +1,4 @@
-part of "views.dart";
+part of 'views.dart';
 
 class Home extends StatefulWidget {
   @override
@@ -41,6 +41,14 @@ class _HomeState extends State<Home> {
     //   _timer.cancel();
     //   super.dispose();
     // }
+    navigateToDetail(DocumentSnapshot concert) {
+      Navigator.push(
+          context,
+          MaterialPageRoute(
+              builder: (context) => DetailConcert(
+                    concertId: concert.id,
+                  )));
+    }
 
     final int konserListSize = 10;
     final Size size = MediaQuery.of(context).size;
@@ -224,66 +232,91 @@ class _HomeState extends State<Home> {
                             ),
                             SizedBox(
                               height: 130,
-                              width: 500,
-                              child: ListView.builder(
-                                physics: ClampingScrollPhysics(),
-                                shrinkWrap: true,
-                                scrollDirection: Axis.horizontal,
-                                // itemCount: snapshot.data.documents.length + 1,
-                                itemCount: konserListSize + 1,
-                                itemBuilder: (BuildContext context, int index) {
-                                  if (index < konserListSize) {
-                                    return Card(
-                                      //supaya cardnya bisa rounded edge
-                                      semanticContainer: true,
-                                      clipBehavior: Clip.antiAliasWithSaveLayer,
-                                      shape: RoundedRectangleBorder(
-                                        borderRadius: BorderRadius.circular(24),
-                                      ),
-                                      child: Center(
-                                        child: Image(
-                                          image: AssetImage(
-                                              "assets/images/Unixverse.jpg"),
-                                        ),
-                                      ),
-                                    );
-                                  } else {
-                                    return Container(
-                                      padding: EdgeInsets.only(
-                                          top: size.height * 0.05),
-                                      height: 100,
-                                      width: 150,
-                                      child: Column(
-                                        children: <Widget>[
-                                          Icon(
-                                            FrinoIcons.f_pointer_right_circle,
-                                            size: 50,
-                                            color: Color(0xFF59ABFC),
-                                          ),
-                                          Text(
-                                            "Lihat Lainnya",
-                                            style: TextStyle(
-                                              color: Color(0xFF59ABFC),
+                              child: StreamBuilder(
+                                stream: FirebaseFirestore.instance
+                                    .collection("concert")
+                                    .snapshots(),
+                                builder: (context, snapshot) {
+                                  return ListView.builder(
+                                    physics: ClampingScrollPhysics(),
+                                    shrinkWrap: true,
+                                    scrollDirection: Axis.horizontal,
+                                    itemCount:
+                                        snapshot.data.documents.length + 1,
+                                    // itemCount: konserListSize + 1,
+                                    itemBuilder:
+                                        (BuildContext context, int index) {
+                                      if (index <
+                                          snapshot.data.documents.length) {
+                                        DocumentSnapshot concert =
+                                            snapshot.data.documents[index];
+                                        return SizedBox(
+                                          child: Card(
+                                            //supaya cardnya bisa rounded edge
+                                            semanticContainer: true,
+                                            clipBehavior:
+                                                Clip.antiAliasWithSaveLayer,
+                                            shape: RoundedRectangleBorder(
+                                              borderRadius:
+                                                  BorderRadius.circular(24),
+                                            ),
+                                            child: GestureDetector(
+                                              onTap: () =>
+                                                  navigateToDetail(concert),
+                                              child: Container(
+                                                height: double.infinity,
+                                                alignment: Alignment.center,
+                                                child: Image(
+                                                  image: NetworkImage(
+                                                      concert['img']),
+                                                  fit: BoxFit.cover,
+                                                  width: 200,
+                                                  height: 200,
+                                                ),
+                                              ),
                                             ),
                                           ),
-                                        ],
-                                      ),
-                                      // child: Card(
-                                      //   //supaya cardnya bisa rounded edge
-                                      //   semanticContainer: true,
-                                      //   clipBehavior:
-                                      //       Clip.antiAliasWithSaveLayer,
-                                      //   shape: RoundedRectangleBorder(
-                                      //     borderRadius:
-                                      //         BorderRadius.circular(24),
-                                      //   ),
-                                      //   child: Center(
-                                      //
-                                      //     child: Text("AAAA"),
-                                      //   ),
-                                      // ),
-                                    );
-                                  }
+                                        );
+                                      }
+                                      return Container(
+                                        padding: EdgeInsets.only(
+                                            top: size.height * 0.05),
+                                        height: 100,
+                                        width: 150,
+                                        child: Column(
+                                          children: <Widget>[
+                                            Icon(
+                                              FrinoIcons.f_pointer_right_circle,
+                                              size: 50,
+                                              color: Color(0xFF59ABFC),
+                                            ),
+                                            Text(
+                                              "Lihat Lainnya",
+                                              style: TextStyle(
+                                                color: Color(0xFF59ABFC),
+                                              ),
+                                            ),
+                                          ],
+                                        ),
+                                        // child: Card(
+                                        //   //supaya cardnya bisa rounded edge
+                                        //   semanticContainer: true,
+                                        //   clipBehavior:
+                                        //       Clip.antiAliasWithSaveLayer,
+                                        //   shape: RoundedRectangleBorder(
+                                        //     borderRadius:
+                                        //         BorderRadius.circular(24),
+                                        //   ),
+                                        //   child: Center(
+                                        //
+                                        //     child: Text("AAAA"),
+                                        //   ),
+                                        // ),
+                                      );
+
+                                      ;
+                                    },
+                                  );
                                 },
                               ),
                             ),
