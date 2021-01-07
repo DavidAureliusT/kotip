@@ -1,8 +1,4 @@
-import 'dart:async';
-import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:flutter/material.dart';
-import 'package:frino_icons/frino_icons.dart';
-import 'detailConcert.dart';
+part of 'views.dart';
 
 class Home extends StatefulWidget {
   @override
@@ -50,7 +46,7 @@ class _HomeState extends State<Home> {
           context,
           MaterialPageRoute(
               builder: (context) => DetailConcert(
-                    concert: concert,
+                    concertId: concert.id,
                   )));
     }
 
@@ -87,7 +83,7 @@ class _HomeState extends State<Home> {
                                   BannerText(
                                     bannerTitle: "SF9",
                                     bannerFontFamily:
-                                        "BwModelicaSS01 ExtraBold",
+                                        "BwModelicaSS01-ExtraBold",
                                     bannerFontSize: 28,
                                     bannerFontColor: Colors.white,
                                   ),
@@ -100,7 +96,7 @@ class _HomeState extends State<Home> {
                                   BannerText(
                                     bannerTitle: "10 AUG 2020",
                                     bannerFontFamily:
-                                        "BwModelicaSS01 ExtraBold",
+                                        "BwModelicaSS01-ExtraBold",
                                     bannerFontSize: 22,
                                     bannerFontColor: Colors.white,
                                   ),
@@ -393,7 +389,7 @@ class _HomeState extends State<Home> {
                                                       child: BannerText(
                                                         bannerTitle: "SF9",
                                                         bannerFontFamily:
-                                                            "BwModelicaSS01 ExtraBold",
+                                                            "BwModelicaSS01-ExtraBold",
                                                         bannerFontSize: 48,
                                                         bannerFontColor:
                                                             Colors.white,
@@ -699,14 +695,14 @@ class PencarianTerkiniCard extends StatelessWidget {
                     Text(
                       PencarianTerkiniGrup,
                       style: TextStyle(
-                          fontFamily: "BwModelicaSS01 ExtraBold",
+                          fontFamily: "BwModelicaSS01-ExtraBold",
                           fontSize: 15,
                           color: Colors.white),
                     ),
                     Text(
                       PencarianTerkiniConcert,
                       style: TextStyle(
-                          fontFamily: "BwModelicaSS01 Regular",
+                          fontFamily: "BwModelicaSS01-Regular",
                           fontSize: 15,
                           color: Colors.white),
                     ),
@@ -724,7 +720,7 @@ class PencarianTerkiniCard extends StatelessWidget {
                         Text(
                           PencarianTerkiniDate,
                           style: TextStyle(
-                              fontFamily: "BwModelicaSS01 Regular",
+                              fontFamily: "BwModelicaSS01-Regular",
                               fontSize: 13,
                               color: Colors.white),
                         ),
