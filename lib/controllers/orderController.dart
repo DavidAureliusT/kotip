@@ -3,12 +3,15 @@ part of "controllers.dart";
 class OrderController {
   static CollectionReference orderCollection =
       FirebaseFirestore.instance.collection("Orders");
+  static CollectionReference orderItemCollection =
+      FirebaseFirestore.instance.collection("OrderItems");
   static DocumentReference orderDoc;
+  static DocumentReference itemDoc;
 
   static Future<bool> submitOrder(String buyerId, String jastipId,
       int ongkosJastip, int subtotal, grandtotal) async {
     await Firebase.initializeApp();
-    List<OrderItem> _orderItemList;
+    List<OrderItem> _orderItemList = List<OrderItem>.empty(growable: true);
     orderDoc = await orderCollection.add({
       'id': "",
       'buyerId': 'david2021',
@@ -17,7 +20,7 @@ class OrderController {
       'subtotal': subtotal,
       'grandtotal': grandtotal
     });
-    await orderCollection
+    await orderItemCollection
         .where('buyerId', isEqualTo: 'david2021')
         .get()
         .then((QuerySnapshot querySnapshot) => {
@@ -27,20 +30,26 @@ class OrderController {
                 _orderItemList.add(_orderItem);
               })
             });
+
     if (orderDoc.id != null) {
-      orderCollection.doc(orderDoc.id).update({
-        'id': orderDoc.id,
-      });
+      for (var _orderItem in _orderItemList) {
+        orderCollection.doc(orderDoc.id).collection('OrderItems').add({
+          'ticketId': _orderItem.ticketId,
+          'quantity': _orderItem.quantity,
+          'orderId': _orderItem.orderId,
+        });
+        orderItemCollection.doc(_orderItem.id).delete();
+      }
       return true;
     } else {
       return false;
     }
   }
 
-  static Future<int> getTotalOrderItem() async {
+  static Future<int> getTotalItem() async {
     int totalTicket = 0;
     await Firebase.initializeApp();
-    await orderCollection
+    await orderItemCollection
         .where('buyerId', isEqualTo: 'david2021')
         .get()
         .then((QuerySnapshot querySnapshot) => {
@@ -51,10 +60,10 @@ class OrderController {
     return totalTicket;
   }
 
-  static Future<int> getSubtotalOrderItem() async {
+  static Future<int> getSubtotal() async {
     int subtotal = 0;
     await Firebase.initializeApp();
-    await orderCollection
+    await orderItemCollection
         .where('buyerId', isEqualTo: 'david2021')
         .get()
         .then((QuerySnapshot querySnapshot) => {
@@ -65,40 +74,45 @@ class OrderController {
     return subtotal;
   }
 
-  static Future<int> getOrderItemCount(Ticket ticket) async {
+  static Future<int> getItemQuantity(Ticket ticket) async {
     int result;
     String docId;
     await Firebase.initializeApp();
     // User _auth = FirebaseAuth.instance.currentUser;
-    await orderCollection
-        .where('ticketId', isEqualTo: ticket.id)
-        .where('buyerId', isEqualTo: 'david2021')
-        .get()
-        .then((value) {
-      docId = value.docs.first.id;
-    });
-    await orderCollection
-        .doc(docId)
-        .get()
-        .then((DocumentSnapshot documentSnapshot) {
-      result = documentSnapshot.data()['quantity'];
-    });
+    try {
+      await orderItemCollection
+          .where('ticketId', isEqualTo: ticket.id)
+          .where('buyerId', isEqualTo: 'david2021')
+          .get()
+          .then((value) {
+        docId = value.docs.first.id;
+      });
+      await orderItemCollection
+          .doc(docId)
+          .get()
+          .then((DocumentSnapshot documentSnapshot) {
+        result = documentSnapshot.data()['quantity'];
+      });
+    } catch (e) {
+      result = 0;
+    }
+
     return result;
   }
 
-  static Future<bool> addOrderItem(Ticket ticket) async {
+  static Future<bool> addItem(Ticket ticket) async {
     await Firebase.initializeApp();
     // User _auth = FirebaseAuth.instance.currentUser;
-    orderDoc = await orderCollection.add({
+    itemDoc = await orderItemCollection.add({
       'id': "",
       'ticketId': ticket.id,
       'buyerId': 'david2021',
       'price': ticket.price,
       'quantity': 1
     });
-    if (orderDoc.id != null) {
-      orderCollection.doc(orderDoc.id).update({
-        'id': orderDoc.id,
+    if (itemDoc.id != null) {
+      orderItemCollection.doc(itemDoc.id).update({
+        'id': itemDoc.id,
       });
       return true;
     } else {
@@ -106,37 +120,37 @@ class OrderController {
     }
   }
 
-  static Future<bool> deleteOrderItem(Ticket ticket) async {
+  static Future<bool> deleteItem(Ticket ticket) async {
     await Firebase.initializeApp();
     // User _auth = FirebaseAuth.instance.currentUser;
-    await orderCollection
+    await orderItemCollection
         .where('ticketId', isEqualTo: ticket.id)
         .where('buyerId', isEqualTo: 'david2021')
         .get()
         .then((value) {
-      orderCollection.doc(value.docs.first.id).delete();
-      orderDoc = orderCollection.doc(value.docs.first.id);
+      orderItemCollection.doc(value.docs.first.id).delete();
+      itemDoc = orderItemCollection.doc(value.docs.first.id);
     });
-    if (orderDoc.id == null) {
+    if (itemDoc.id == null) {
       return true;
     } else {
       return false;
     }
   }
 
-  static Future<bool> updateOrderItem(Ticket ticket, int quantity) async {
+  static Future<bool> updateItem(Ticket ticket, int quantity) async {
     await Firebase.initializeApp();
     bool result = false;
     // User _auth = FirebaseAuth.instance.currentUser;
     try {
-      await orderCollection
+      await orderItemCollection
           .where('ticketId', isEqualTo: ticket.id)
           .where('buyerId', isEqualTo: 'david2021')
           .get()
           .then((value) {
         String docId = value.docs.first.id;
-        orderCollection.doc(docId).update({'quantity': quantity});
-        orderDoc = orderCollection.doc(value.docs.first.id);
+        orderItemCollection.doc(docId).update({'quantity': quantity});
+        itemDoc = orderItemCollection.doc(value.docs.first.id);
       });
       result = true;
     } catch (e) {

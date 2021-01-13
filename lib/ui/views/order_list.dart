@@ -1,30 +1,43 @@
 part of "views.dart";
 
 class OrderList extends StatefulWidget {
-  // final String concertId;
-  // ConcertView({this.concertId});
+  final Concert concert;
+  OrderList({this.concert});
   @override
-  _OrderListState createState() => _OrderListState();
+  _OrderListState createState() => _OrderListState(concert);
 }
 
 class _OrderListState extends State<OrderList> {
   String concertId = 'lSXWI5Cj53gTdvTXcq6B';
-  // _ConcertViewState(this.concertId);
+  Concert concert;
+  _OrderListState(this.concert);
   CollectionReference concertCollection;
   CollectionReference ticketCollection;
+  CollectionReference orderItemCollection;
+
+  DateTime time = DateTime.now();
+  bool _disposed = false;
 
   @override
   void initState() {
+    Timer(Duration(seconds: 1), () {
+      if (!_disposed)
+        setState(() {
+          time = time.add(Duration(seconds: -1));
+        });
+    });
     super.initState();
     concertCollection = FirebaseFirestore.instance.collection("Concerts");
     ticketCollection = FirebaseFirestore.instance
         .collection("Concerts")
         .doc(concertId)
         .collection('Tickets');
+    orderItemCollection = FirebaseFirestore.instance.collection('OrderItems');
   }
 
   @override
   void dispose() {
+    _disposed = true;
     super.dispose();
   }
 
@@ -33,15 +46,17 @@ class _OrderListState extends State<OrderList> {
   int ongkosJastip;
   int subtotal;
   int grandtotal;
+
   void detailOrderCalculate() async {
-    int _totalItem = await OrderController.getTotalOrderItem();
-    int _subtotal = await OrderController.getSubtotalOrderItem();
-    setState(() {
-      totalItem = _totalItem;
-      subtotal = _subtotal;
-      grandtotal = _subtotal + (biayaJastip * _totalItem);
-      ongkosJastip = biayaJastip * _totalItem;
-    });
+    int _totalItem = await OrderController.getTotalItem();
+    int _subtotal = await OrderController.getSubtotal();
+    if (mounted)
+      setState(() {
+        totalItem = _totalItem;
+        subtotal = _subtotal;
+        grandtotal = _subtotal + (biayaJastip * _totalItem);
+        ongkosJastip = biayaJastip * _totalItem;
+      });
   }
 
   @override
@@ -59,28 +74,17 @@ class _OrderListState extends State<OrderList> {
                 fontWeight: FontWeight.bold,
               ),
             ),
-            StreamBuilder<DocumentSnapshot>(
-                stream: concertCollection.doc(concertId).snapshots(),
-                builder: (BuildContext context,
-                    AsyncSnapshot<DocumentSnapshot> snapshot) {
-                  if (snapshot.hasError) {
-                    return Text('Something went wrong');
-                  }
-                  Map<String, dynamic> dataConcert = snapshot.data.data();
-                  return Column(children: [
-                    Text(
-                      dataConcert['title'],
-                      style: TextStyle(
-                        color: _blackPrimary,
-                        fontWeight: FontWeight.bold,
-                        fontSize: 30,
-                      ),
-                    ),
-                    SizedBox(
-                      height: 15.0,
-                    )
-                  ]);
-                }),
+            Text(
+              concert.title,
+              style: TextStyle(
+                color: _blackPrimary,
+                fontWeight: FontWeight.bold,
+                fontSize: 30,
+              ),
+            ),
+            SizedBox(
+              height: 15.0,
+            ),
             Text(
               'Tickets',
               style: TextStyle(
@@ -89,7 +93,7 @@ class _OrderListState extends State<OrderList> {
               ),
             ),
             StreamBuilder(
-                stream: ticketCollection.snapshots(),
+                stream: orderItemCollection.snapshots(),
                 builder: (BuildContext context,
                     AsyncSnapshot<QuerySnapshot> snapshot) {
                   if (snapshot.hasError) {
@@ -99,11 +103,9 @@ class _OrderListState extends State<OrderList> {
                       shrinkWrap: true,
                       itemCount: snapshot.data.docs.length,
                       itemBuilder: (BuildContext context, int index) {
-                        DocumentSnapshot dataTicket = snapshot.data.docs[index];
-                        Ticket ticket = Ticket(
-                            dataTicket.id,
-                            dataTicket.data()['ticket_type'],
-                            dataTicket.data()['price']);
+                        DocumentSnapshot dataItem = snapshot.data.docs[index];
+                        Ticket ticket = concert.tickets.firstWhere(
+                            (element) => element.id == dataItem['ticketId']);
                         return TicketCard(ticket: ticket);
                       });
                 }),
@@ -162,7 +164,50 @@ class _OrderListState extends State<OrderList> {
                       )),
                     ],
                   ),
-                  RaisedButton(onPressed: () {}, child: Text('Order!'))
+                  FlatButton(
+                    color: Colors.blue,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(20),
+                      side: BorderSide(
+                        color: _blackPrimary,
+                      ),
+                    ),
+                    child: Text(
+                      'JOIN JASTIP',
+                      style: TextStyle(
+                        color: Colors.white,
+                      ),
+                    ),
+                    onPressed: () async {
+                      bool _submitStatus = await OrderController.submitOrder(
+                          'david2021',
+                          'veroll2021',
+                          ongkosJastip,
+                          subtotal,
+                          grandtotal);
+                      if (_submitStatus == true) {
+                        Fluttertoast.showToast(
+                          msg: "Submit Success!",
+                          toastLength: Toast.LENGTH_SHORT,
+                          gravity: ToastGravity.BOTTOM,
+                          backgroundColor: Colors.green,
+                          textColor: Colors.white,
+                          fontSize: 16.0,
+                        );
+                        Navigator.of(context).pushReplacement(
+                            MaterialPageRoute(builder: (context) => Home()));
+                      } else {
+                        Fluttertoast.showToast(
+                          msg: "Submit failed. Please try again.",
+                          toastLength: Toast.LENGTH_SHORT,
+                          gravity: ToastGravity.BOTTOM,
+                          backgroundColor: Colors.red,
+                          textColor: Colors.white,
+                          fontSize: 16.0,
+                        );
+                      }
+                    },
+                  ),
                 ],
               ),
             ),

@@ -12,7 +12,7 @@ class Concert extends Equatable {
   //constructor
 
   Concert(this.id, this.title, this.location, this.dueDate, this.time,
-      this.tickets);
+      {this.tickets});
 
   @override
   List<Object> get props => [dueDate, location, title, time, tickets];

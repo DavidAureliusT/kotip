@@ -10,44 +10,56 @@ class TicketCard extends StatefulWidget {
 class _TicketCardState extends State<TicketCard> {
   Ticket ticket;
   _TicketCardState(this.ticket);
-  int ticketCount = 0;
+  int ticketQuantity = 0;
 
   void _incrementCounter() {
-    setState(() {
-      ticketCount++;
-    });
-    if (ticketCount == 1) {
-      OrderController.addOrderItem(ticket);
+    if (mounted)
+      setState(() {
+        ticketQuantity++;
+      });
+    if (ticketQuantity == 1) {
+      OrderController.addItem(ticket);
     } else {
-      OrderController.updateOrderItem(ticket, ticketCount);
+      OrderController.updateItem(ticket, ticketQuantity);
     }
   }
 
   void _decreaseCounter() {
-    setState(() {
-      ticketCount--;
-    });
-    if (ticketCount == 0) {
-      OrderController.deleteOrderItem(ticket);
+    if (mounted)
+      setState(() {
+        ticketQuantity--;
+      });
+    if (ticketQuantity == 0) {
+      OrderController.deleteItem(ticket);
     } else {
-      OrderController.updateOrderItem(ticket, ticketCount);
+      OrderController.updateItem(ticket, ticketQuantity);
     }
   }
 
-  @override
-  void initState() {
-    super.initState();
+  void setOrderItemCount() async {
+    int _quantity = await OrderController.getItemQuantity(ticket);
+    if (mounted)
+      setState(() {
+        ticketQuantity = _quantity;
+      });
   }
 
-  void setOrderItemCount() async {
-    int count = await OrderController.getOrderItemCount(ticket);
-    setState(() {
-      ticketCount = count;
+  DateTime time = DateTime.now();
+  bool _disposed = false;
+  @override
+  void initState() {
+    Timer(Duration(seconds: 1), () {
+      if (!_disposed)
+        setState(() {
+          time = time.add(Duration(seconds: -1));
+        });
     });
+    super.initState();
   }
 
   @override
   void dispose() {
+    _disposed = true;
     super.dispose();
   }
 
@@ -96,7 +108,7 @@ class _TicketCardState extends State<TicketCard> {
                   ),
                 ),
               ),
-              ticketCount == 0
+              ticketQuantity == 0
                   ? FlatButton(
                       color: Colors.blue,
                       shape: RoundedRectangleBorder(
@@ -125,7 +137,7 @@ class _TicketCardState extends State<TicketCard> {
                             _decreaseCounter();
                           },
                         ),
-                        Text(ticketCount.toString()),
+                        Text(ticketQuantity.toString()),
                         IconButton(
                           icon: Icon(Icons.add),
                           color: Colors.blue,

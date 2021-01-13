@@ -6,6 +6,25 @@ class Home extends StatefulWidget {
 }
 
 class _HomeState extends State<Home> {
+  DateTime time = DateTime.now();
+  bool _disposed = false;
+  @override
+  void initState() {
+    Timer(Duration(seconds: 1), () {
+      if (!_disposed)
+        setState(() {
+          time = time.add(Duration(seconds: -1));
+        });
+    });
+    super.initState();
+  }
+
+  @override
+  void dispose() {
+    _disposed = true;
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
     void testKotipButton() {
@@ -45,7 +64,7 @@ class _HomeState extends State<Home> {
       Navigator.push(
           context,
           MaterialPageRoute(
-              builder: (context) => DetailConcert(
+              builder: (context) => ConcertView(
                     concertId: concert.id,
                   )));
     }
@@ -234,7 +253,7 @@ class _HomeState extends State<Home> {
                               height: 130,
                               child: StreamBuilder(
                                 stream: FirebaseFirestore.instance
-                                    .collection("concert")
+                                    .collection("Concerts")
                                     .snapshots(),
                                 builder: (context, snapshot) {
                                   return ListView.builder(

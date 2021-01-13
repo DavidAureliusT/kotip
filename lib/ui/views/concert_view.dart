@@ -1,22 +1,32 @@
 part of 'views.dart';
 
 class ConcertView extends StatefulWidget {
-  // final String concertId;
-  // ConcertView({this.concertId});
+  final String concertId;
+  ConcertView({this.concertId});
 
   @override
-  _ConcertViewState createState() => _ConcertViewState();
+  _ConcertViewState createState() => _ConcertViewState(concertId);
 }
 
 class _ConcertViewState extends State<ConcertView> {
-  String concertId = 'lSXWI5Cj53gTdvTXcq6B';
-  // _ConcertViewState(this.concertId);
+  String concertId;
+  _ConcertViewState(this.concertId);
   CollectionReference concertCollection;
   CollectionReference ticketCollection;
   List<OrderItem> orderItems;
+  Concert concert;
+
+  DateTime time = DateTime.now();
+  bool _disposed = false;
 
   @override
   void initState() {
+    Timer(Duration(seconds: 1), () {
+      if (!_disposed)
+        setState(() {
+          time = time.add(Duration(seconds: -1));
+        });
+    });
     super.initState();
     concertCollection = FirebaseFirestore.instance.collection("Concerts");
     ticketCollection = FirebaseFirestore.instance
@@ -28,6 +38,7 @@ class _ConcertViewState extends State<ConcertView> {
 
   @override
   void dispose() {
+    _disposed = true;
     super.dispose();
   }
 
@@ -49,6 +60,14 @@ class _ConcertViewState extends State<ConcertView> {
                   return Text('Something went wrong');
                 }
                 Map<String, dynamic> dataConcert = snapshot.data.data();
+                List<Ticket> _tickets = List<Ticket>.empty(growable: true);
+                concert = Concert(
+                    snapshot.data.id,
+                    dataConcert['title'],
+                    dataConcert['location'],
+                    dataConcert['dueDate'],
+                    dataConcert['time'],
+                    tickets: _tickets);
                 return Column(children: [
                   Container(
                     height: 200,
@@ -137,6 +156,7 @@ class _ConcertViewState extends State<ConcertView> {
                           dataTicket.id,
                           dataTicket.data()['ticket_type'],
                           dataTicket.data()['price']);
+                      concert.tickets.add(ticket);
                       return TicketCard(ticket: ticket);
                     });
               }),
@@ -152,15 +172,20 @@ class _ConcertViewState extends State<ConcertView> {
               ),
             ),
             child: Text(
-              'JOIN JASTIP',
+              'Order Detail',
               style: TextStyle(
                 color: Colors.white,
               ),
             ),
             onPressed: () {
-              this.dispose();
-              Navigator.of(context)
-                  .push(MaterialPageRoute(builder: (context) => OrderList()));
+              // Navigator.of(context)
+              //     .restorablePush((context, arguments) => MaterialPageRoute(
+              //     builder: (context) => OrderList(concert: concert))
+              //         );
+              Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) => OrderList(concert: concert)));
             },
           ),
         ],
