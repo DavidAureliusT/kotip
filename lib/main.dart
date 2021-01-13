@@ -15,7 +15,7 @@ class MyApp extends StatelessWidget {
       initialRoute: '/',
       debugShowCheckedModeBanner: false,
       routes: {
-        '/': (context) => DetailConcert(),
+        '/': (context) => ConcertView(),
         // '/first': (context) => Login(),
       },
       theme: ThemeData(

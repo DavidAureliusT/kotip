@@ -16,16 +16,44 @@ class _TicketCardState extends State<TicketCard> {
     setState(() {
       ticketCount++;
     });
+    if (ticketCount == 1) {
+      OrderController.addOrderItem(ticket);
+    } else {
+      OrderController.updateOrderItem(ticket, ticketCount);
+    }
   }
 
   void _decreaseCounter() {
     setState(() {
       ticketCount--;
     });
+    if (ticketCount == 0) {
+      OrderController.deleteOrderItem(ticket);
+    } else {
+      OrderController.updateOrderItem(ticket, ticketCount);
+    }
+  }
+
+  @override
+  void initState() {
+    super.initState();
+  }
+
+  void setOrderItemCount() async {
+    int count = await OrderController.getOrderItemCount(ticket);
+    setState(() {
+      ticketCount = count;
+    });
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
+    setOrderItemCount();
     return Card(
       margin: EdgeInsets.only(top: 10),
       elevation: 3,

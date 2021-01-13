@@ -1,219 +1,174 @@
 part of "views.dart";
 
 class OrderList extends StatefulWidget {
+  // final String concertId;
+  // ConcertView({this.concertId});
   @override
   _OrderListState createState() => _OrderListState();
 }
 
 class _OrderListState extends State<OrderList> {
+  String concertId = 'lSXWI5Cj53gTdvTXcq6B';
+  // _ConcertViewState(this.concertId);
+  CollectionReference concertCollection;
+  CollectionReference ticketCollection;
+
+  @override
+  void initState() {
+    super.initState();
+    concertCollection = FirebaseFirestore.instance.collection("Concerts");
+    ticketCollection = FirebaseFirestore.instance
+        .collection("Concerts")
+        .doc(concertId)
+        .collection('Tickets');
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+  }
+
+  int biayaJastip = 50000;
+  int totalItem;
+  int ongkosJastip;
+  int subtotal;
+  int grandtotal;
+  void detailOrderCalculate() async {
+    int _totalItem = await OrderController.getTotalOrderItem();
+    int _subtotal = await OrderController.getSubtotalOrderItem();
+    setState(() {
+      totalItem = _totalItem;
+      subtotal = _subtotal;
+      grandtotal = _subtotal + (biayaJastip * _totalItem);
+      ongkosJastip = biayaJastip * _totalItem;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
-    int ticketACount = 0;
-    int ticketBCount = 0;
-    int ticketCCount = 0;
-    const Color _primary = Colors.black;
-    const Color _secondary = Colors.black54;
-    void _incrementCounter(String ticketID) {
-      setState(() {
-        if (ticketID == '1') {
-          ticketACount++;
-        } else if (ticketID == '2') {
-          ticketBCount++;
-        } else if (ticketID == '3') {
-          ticketCCount++;
-        }
-      });
-    }
-
-    void _decreaseCounter(String ticketID) {
-      setState(() {
-        if (ticketID == '1') {
-          ticketACount--;
-        } else if (ticketID == '2') {
-          ticketBCount--;
-        } else if (ticketID == '3') {
-          ticketCCount--;
-        }
-      });
-    }
-
+    detailOrderCalculate();
     return Scaffold(
-      body: Stack(children: [
-        CustomScrollView(
-          slivers: [
-            SliverAppBar(
-              title: Text('Order List'),
-              centerTitle: true,
+      appBar: AppBar(centerTitle: true, title: Text('Order List')),
+      body: Stack(
+        children: [
+          ListView(padding: EdgeInsets.all(15.0), children: [
+            Text(
+              'Concert',
+              style: TextStyle(
+                color: _blackSecondary,
+                fontWeight: FontWeight.bold,
+              ),
             ),
-            SliverPadding(
-              padding: EdgeInsets.all(15.0),
-              sliver: SliverList(
-                  delegate: SliverChildListDelegate(<Widget>[
-                Text(
-                  'Concert',
-                  style: TextStyle(
-                    color: _secondary,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-                Text(
-                  'One Heart Jakarta Festival 2020',
-                  style: TextStyle(
-                    color: _primary,
-                    fontWeight: FontWeight.bold,
-                    fontSize: 30,
-                  ),
-                ),
-                SizedBox(
-                  height: 15.0,
-                ),
-                Text(
-                  'Tickets',
-                  style: TextStyle(
-                    color: _primary,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-                Card(
-                  margin: EdgeInsets.only(top: 10),
-                  elevation: 3,
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(20),
-                  ),
-                  child: Padding(
-                    padding: const EdgeInsets.only(
-                        top: 15.0, bottom: 10.0, right: 15.0, left: 15.0),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          'Section: General Admission',
-                          style: TextStyle(
-                            fontSize: 21,
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-                        Row(children: [
-                          Icon(Icons.help_outline_rounded, color: _secondary),
-                          Text(
-                            'E-Ticket',
-                            style: TextStyle(
-                              fontStyle: FontStyle.italic,
-                              color: _secondary,
-                            ),
-                          ),
-                        ]),
-                        Row(children: [
-                          Expanded(
-                            child: Text(
-                              'Harga: Rp. 1.250.000 / ticket',
-                              style: TextStyle(
-                                color: _primary,
-                              ),
-                            ),
-                          ),
-                          ticketACount == 0
-                              ? FlatButton(
-                                  color: Colors.blue,
-                                  shape: RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(20),
-                                    side: BorderSide(
-                                      color: _primary,
-                                    ),
-                                  ),
-                                  child: Text(
-                                    'Select',
-                                    style: TextStyle(
-                                      color: Colors.white,
-                                      fontSize: 12,
-                                    ),
-                                  ),
-                                  onPressed: () {
-                                    _incrementCounter('1');
-                                  },
-                                )
-                              : Row(
-                                  children: [
-                                    IconButton(
-                                      icon: Icon(Icons.remove),
-                                      color: Colors.blue,
-                                      onPressed: () {
-                                        _decreaseCounter('1');
-                                      },
-                                    ),
-                                    Text(ticketACount.toString()),
-                                    IconButton(
-                                      icon: Icon(Icons.add),
-                                      color: Colors.blue,
-                                      onPressed: () {
-                                        _incrementCounter('1');
-                                      },
-                                    ),
-                                  ],
-                                ),
-                        ]),
-                      ],
+            StreamBuilder<DocumentSnapshot>(
+                stream: concertCollection.doc(concertId).snapshots(),
+                builder: (BuildContext context,
+                    AsyncSnapshot<DocumentSnapshot> snapshot) {
+                  if (snapshot.hasError) {
+                    return Text('Something went wrong');
+                  }
+                  Map<String, dynamic> dataConcert = snapshot.data.data();
+                  return Column(children: [
+                    Text(
+                      dataConcert['title'],
+                      style: TextStyle(
+                        color: _blackPrimary,
+                        fontWeight: FontWeight.bold,
+                        fontSize: 30,
+                      ),
                     ),
+                    SizedBox(
+                      height: 15.0,
+                    )
+                  ]);
+                }),
+            Text(
+              'Tickets',
+              style: TextStyle(
+                color: _blackPrimary,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+            StreamBuilder(
+                stream: ticketCollection.snapshots(),
+                builder: (BuildContext context,
+                    AsyncSnapshot<QuerySnapshot> snapshot) {
+                  if (snapshot.hasError) {
+                    return Text('Something went wrong');
+                  }
+                  return ListView.builder(
+                      shrinkWrap: true,
+                      itemCount: snapshot.data.docs.length,
+                      itemBuilder: (BuildContext context, int index) {
+                        DocumentSnapshot dataTicket = snapshot.data.docs[index];
+                        Ticket ticket = Ticket(
+                            dataTicket.id,
+                            dataTicket.data()['ticket_type'],
+                            dataTicket.data()['price']);
+                        return TicketCard(ticket: ticket);
+                      });
+                }),
+          ]),
+          Align(
+            alignment: Alignment.bottomCenter,
+            child: Container(
+              padding: EdgeInsets.all(15.0),
+              // color: Colors.red,
+              height: 150,
+              child: Column(
+                children: [
+                  Row(
+                    children: [
+                      Expanded(child: Text('Total ticket:')),
+                      Expanded(
+                          child: Text(
+                        totalItem.toString(),
+                        textAlign: TextAlign.right,
+                      )),
+                    ],
                   ),
-                ),
-              ])),
+                  Row(
+                    children: [
+                      Expanded(child: Text('Ongkos Jastip')),
+                      Expanded(
+                          child: Text(
+                        NumberFormat.currency(
+                                locale: 'id', decimalDigits: 0, symbol: 'Rp ')
+                            .format(ongkosJastip),
+                        textAlign: TextAlign.right,
+                      )),
+                    ],
+                  ),
+                  Row(
+                    children: [
+                      Expanded(child: Text('Subtotal')),
+                      Expanded(
+                          child: Text(
+                        NumberFormat.currency(
+                                locale: 'id', decimalDigits: 0, symbol: 'Rp ')
+                            .format(subtotal),
+                        textAlign: TextAlign.right,
+                      )),
+                    ],
+                  ),
+                  Row(
+                    children: [
+                      Expanded(child: Text('Grandtotal')),
+                      Expanded(
+                          child: Text(
+                        NumberFormat.currency(
+                                locale: 'id', decimalDigits: 0, symbol: 'Rp ')
+                            .format(grandtotal),
+                        textAlign: TextAlign.right,
+                      )),
+                    ],
+                  ),
+                  RaisedButton(onPressed: () {}, child: Text('Order!'))
+                ],
+              ),
             ),
-          ],
-        ),
-        Align(
-          alignment: Alignment.bottomCenter,
-          child: Container(
-            padding: EdgeInsets.all(15.0),
-            // color: Colors.red,
-            height: 150,
-            child: Column(
-              children: [
-                Row(
-                  children: [
-                    Expanded(child: Text('Total ticket:')),
-                    Expanded(
-                        child: Text(
-                      '888',
-                      textAlign: TextAlign.right,
-                    )),
-                  ],
-                ),
-                Row(
-                  children: [
-                    Expanded(child: Text('Harga Jastip')),
-                    Expanded(
-                        child: Text(
-                      'Rp. 888.888',
-                      textAlign: TextAlign.right,
-                    )),
-                  ],
-                ),
-                Row(
-                  children: [
-                    Expanded(child: Text('Subtotal')),
-                    Expanded(
-                        child: Text(
-                      'Rp 888.888',
-                      textAlign: TextAlign.right,
-                    )),
-                  ],
-                ),
-                Row(
-                  children: [
-                    Expanded(child: Text('Tax')),
-                    Expanded(
-                        child: Text(
-                      'Rp. 88.888',
-                      textAlign: TextAlign.right,
-                    )),
-                  ],
-                ),
-                RaisedButton(onPressed: () {}, child: Text('Order!'))
-              ],
-            ),
-          ),
-        )
-      ]),
+          )
+        ],
+      ),
     );
   }
 }
